@@ -5,10 +5,19 @@
     xmlns:local="using:CompAPI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="using:CompAPI.Model"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-
+        <GridView x:Name="xamlMovies">
+            <GridView.ItemTemplate>
+                <DataTemplate x:DataType="model:Movie">
+                    <Grid>
+                        <Image Source="{x:Bind Img}"></Image>
+                    </Grid>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
     </Grid>
 </Page>
