@@ -14,7 +14,7 @@
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="model:Movie">
                     <Grid>
-                        <Image Source="{x:Bind Img}"></Image>
+                        <Image Width="190" Height="246" Source="{x:Bind Img}"></Image>
                     </Grid>
                 </DataTemplate>
             </GridView.ItemTemplate>
