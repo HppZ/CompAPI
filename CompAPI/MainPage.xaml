@@ -10,14 +10,30 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <GridView x:Name="xamlMovies">
+        <GridView x:Name="xamlMovies" HorizontalAlignment="Center">
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="model:Movie">
-                    <Grid>
-                        <Image Width="190" Height="246" Source="{x:Bind Img}"></Image>
-                    </Grid>
+                    <local:MovieItem></local:MovieItem>
                 </DataTemplate>
             </GridView.ItemTemplate>
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsWrapGrid ItemWidth="220" ItemHeight="266" Orientation="Horizontal"></ItemsWrapGrid>
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
+            <GridView.ItemContainerStyle>
+                <Style TargetType="GridViewItem">
+                    <Style.Setters>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="GridViewItem">
+                                    <ContentPresenter></ContentPresenter>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style.Setters>
+                </Style>
+            </GridView.ItemContainerStyle>
         </GridView>
     </Grid>
 </Page>
