@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -22,6 +23,9 @@ namespace CompAPI
     public sealed partial class MovieItem : UserControl
     {
         private CompositionAnimation _translationY;
+        private CompositionAnimation _blurShadowIn;
+        private CompositionAnimation _blurShadowOut;
+        private CompositionAnimation _opacityShadow;
         private CompositionAnimationGroup _animationGroup;
         private CompositionPropertySet _propertySet;
         private DropShadow _shadow;
@@ -35,26 +39,28 @@ namespace CompAPI
         protected override void OnPointerEntered(PointerRoutedEventArgs e)
         {
             base.OnPointerEntered(e);
-            StartAnimation(-8, 0.6f, 40);
+            StartAnimation(true, -8, 0.8f, 40);
         }
 
         protected override void OnPointerExited(PointerRoutedEventArgs e)
         {
             base.OnPointerExited(e);
-            StartAnimation(0, 0, 0);
+            StartAnimation(false, 0, 0, 0);
         }
 
         protected override void OnPointerPressed(PointerRoutedEventArgs e)
         {
             base.OnPointerPressed(e);
+            StartAnimation(true, 0, 0.4f, 24);
         }
 
         protected override void OnPointerReleased(PointerRoutedEventArgs e)
         {
             base.OnPointerReleased(e);
+            StartAnimation(true, -8, 0.6f, 40);
         }
 
-        private void StartAnimation(float translation, float shadowOpacity, float blurRadius)
+        private void StartAnimation(bool pointerOver, float translation, float shadowOpacity, float blurRadius)
         {
             _propertySet.InsertScalar("TranslateTo", translation);
             var visual = ElementCompositionPreview.GetElementVisual(this);
@@ -62,6 +68,9 @@ namespace CompAPI
 
             _propertySet.InsertScalar("Opacity", shadowOpacity);
             _propertySet.InsertScalar("BlurRadius", blurRadius);
+            _animationGroup.RemoveAll();
+            _animationGroup.Add(pointerOver ? _blurShadowIn : _blurShadowOut);
+            _animationGroup.Add(_opacityShadow);
             _shadow.StartAnimationGroup(_animationGroup);
         }
 
@@ -79,7 +88,7 @@ namespace CompAPI
             translationAnimation.InsertExpressionKeyFrame(1f, "props.TranslateTo");
             translationAnimation.SetReferenceParameter("props", _propertySet);
             translationAnimation.StopBehavior = AnimationStopBehavior.SetToFinalValue;
-            translationAnimation.Duration = TimeSpan.FromSeconds(1);
+            translationAnimation.Duration = TimeSpan.FromSeconds(0.6);
             _translationY = translationAnimation;
 
             // shadow
@@ -96,22 +105,30 @@ namespace CompAPI
             bindSizeAnimation.SetReferenceParameter("hostVisual", imgVisual);
             shadowVisual.StartAnimation("Size", bindSizeAnimation);
 
-            var blurRadiusAnimation = compositor.CreateScalarKeyFrameAnimation();
-            blurRadiusAnimation.InsertExpressionKeyFrame(1f, "props.BlurRadius");
-            blurRadiusAnimation.SetReferenceParameter("props", _propertySet);
-            blurRadiusAnimation.StopBehavior = AnimationStopBehavior.SetToFinalValue;
-            blurRadiusAnimation.Duration = TimeSpan.FromSeconds(1);
-            blurRadiusAnimation.Target = "BlurRadius";
+            var blurRadiusAnimationIn = compositor.CreateScalarKeyFrameAnimation();
+            blurRadiusAnimationIn.InsertExpressionKeyFrame(1f, "props.BlurRadius");
+            blurRadiusAnimationIn.SetReferenceParameter("props", _propertySet);
+            blurRadiusAnimationIn.StopBehavior = AnimationStopBehavior.SetToFinalValue;
+            blurRadiusAnimationIn.Duration = TimeSpan.FromSeconds(0.6);
+            blurRadiusAnimationIn.Target = "BlurRadius";
+            _blurShadowIn = blurRadiusAnimationIn;
+
+            var blurRadiusAnimationOut = compositor.CreateScalarKeyFrameAnimation();
+            var easing = compositor.CreateCubicBezierEasingFunction(new Vector2(0.27f, 0.72f), new Vector2(0.82f, 0.29f));
+            blurRadiusAnimationOut.InsertExpressionKeyFrame(1f, "props.BlurRadius");
+            blurRadiusAnimationOut.SetReferenceParameter("props", _propertySet);
+            blurRadiusAnimationOut.StopBehavior = AnimationStopBehavior.SetToFinalValue;
+            blurRadiusAnimationOut.Duration = TimeSpan.FromSeconds(0.6);
+            blurRadiusAnimationOut.Target = "BlurRadius";
+            _blurShadowOut = blurRadiusAnimationOut;
 
             var opacityAnimation = compositor.CreateScalarKeyFrameAnimation();
             opacityAnimation.InsertExpressionKeyFrame(1f, "props.Opacity");
             opacityAnimation.SetReferenceParameter("props", _propertySet);
             opacityAnimation.StopBehavior = AnimationStopBehavior.SetToFinalValue;
-            opacityAnimation.Duration = TimeSpan.FromSeconds(1);
+            opacityAnimation.Duration = TimeSpan.FromSeconds(0.6);
             opacityAnimation.Target = "Opacity";
-
-            _animationGroup.Add(blurRadiusAnimation);
-            // _animationGroup.Add(opacityAnimation);
+            _opacityShadow = opacityAnimation;
         }
 
     }

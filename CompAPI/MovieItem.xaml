@@ -11,6 +11,6 @@
 
     <Grid >
         <Border x:Name="xamlShadow"></Border>
-        <Image x:Name="xamlImg"  Source="{Binding Img}" Stretch="Fill"></Image>
+        <Image x:Name="xamlImg"  Source="{Binding Img}" Opacity="1" Stretch="Fill"></Image>
     </Grid>
 </UserControl>
