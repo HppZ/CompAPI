@@ -10,7 +10,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <GridView x:Name="xamlMovies" HorizontalAlignment="Center">
+        <GridView x:Name="xamlMovies">
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="model:Movie">
                     <local:MovieItem></local:MovieItem>
@@ -18,7 +18,7 @@
             </GridView.ItemTemplate>
             <GridView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <ItemsWrapGrid ItemWidth="220" ItemHeight="266" Orientation="Horizontal"></ItemsWrapGrid>
+                    <ItemsWrapGrid HorizontalAlignment="Center" ItemWidth="220" ItemHeight="266" Orientation="Horizontal"></ItemsWrapGrid>
                 </ItemsPanelTemplate>
             </GridView.ItemsPanel>
             <GridView.ItemContainerStyle>
