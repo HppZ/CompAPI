@@ -35,7 +35,7 @@ namespace CompAPI
         protected override void OnPointerEntered(PointerRoutedEventArgs e)
         {
             base.OnPointerEntered(e);
-            StartAnimation(-8, 1.0f, 40);
+            StartAnimation(-8, 0.6f, 40);
         }
 
         protected override void OnPointerExited(PointerRoutedEventArgs e)
